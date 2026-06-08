@@ -7,4 +7,4 @@ export const initCreate = async (cfg) => {
     return table;
 };
 
-// v1.1
+// v2.2

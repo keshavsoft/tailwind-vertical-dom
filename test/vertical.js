@@ -14,6 +14,7 @@ const startFunc = async () => {
     const folderName = process.argv[2];
 
     const showLog = process.argv[3] === "true";
+    console.log("run : ", run);
 
     run({
         folderName,
