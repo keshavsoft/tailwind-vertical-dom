@@ -3,10 +3,10 @@ import { templateVersion } from "./src/version.js";
 export default {
     build: {
         lib: {
-            entry: "src/table.js",
-            name: "KSTable",
+            entry: "src/vertical.js",
+            name: "KSVertical",
             formats: ["umd"],
-            fileName: () => `${templateVersion}/kstable.js`
+            fileName: () => `${templateVersion}/ksvertical.js`
         },
         outDir: "Public",
         emptyOutDir: false
