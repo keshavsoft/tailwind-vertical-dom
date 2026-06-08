@@ -2,7 +2,7 @@ import parseInput from "./core/parseInput.js";
 import showUsage from './core/showUsage.js';
 
 // import resolveCommand from "./core/resolveCommand.js";
-import tableCommand from "./commands/table.js";
+import tableCommand from "./commands/vertical.js";
 
 import pkg from '../../../package.json' with { type: 'json' };
 

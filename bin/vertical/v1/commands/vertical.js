@@ -1,11 +1,11 @@
-import { locateSource } from "./table/steps/locateSource.js";
-import { locateDestination } from "./table/steps/locateDestination.js";
+import { locateSource } from "./vertical/steps/locateSource.js";
+import { locateDestination } from "./vertical/steps/locateDestination.js";
 
-import { createProject } from "./table/steps/createProject.js";
-import { announce } from "./table/steps/announce.js";
+import { createProject } from "./vertical/steps/createProject.js";
+import { announce } from "./vertical/steps/announce.js";
 
-import resolveFolderName from "./table/steps/resolveFolderName.js";
-import checks from "./table/steps/checks.js";
+import resolveFolderName from "./vertical/steps/resolveFolderName.js";
+import checks from "./vertical/steps/checks.js";
 
 export default ({
     folderName = "",
