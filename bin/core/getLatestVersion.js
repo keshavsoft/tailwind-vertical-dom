@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default function getLatestVersion() {
-    const versions = fs.readdirSync(path.join(__dirname, "..", "table"))
+    const versions = fs.readdirSync(path.join(__dirname, "..", "vertical"))
         .filter(n => /^v\d+$/.test(n))
         .sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)));
 

@@ -1,6 +1,6 @@
 import getLatestVersion from "../bin/core/getLatestVersion.js";
 
-const commandToSend = "table";
+const commandToSend = "vertical";
 
 const load = async () => {
     const v = getLatestVersion();
