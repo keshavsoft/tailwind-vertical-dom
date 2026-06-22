@@ -1,8 +1,8 @@
 import { initCreate }
-    from "../bin/vertical/v2/commands/vertical/template/v4/entry.js";
+    from "../bin/vertical/v2/commands/vertical/template/v5/entry.js";
 
 (async () => {
-    window.KSVerticalVersion = "v2.4";
+    window.KSVerticalVersion = "v2.5";
 
     window.KSVertical = {};
 
