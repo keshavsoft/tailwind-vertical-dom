@@ -69,7 +69,7 @@ export default {
             formats: ["umd"],
             fileName: () => "ksvertical.js"
         },
-        outDir: "dist",
+        outDir: `dist/${versionStr}`,
         emptyOutDir: false
     },
     resolve: {
