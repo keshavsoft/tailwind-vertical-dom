@@ -44,30 +44,6 @@ const outerNum = latest.outer.slice(1);
 const innerNum = latest.inner.slice(1);
 const versionStr = `v${outerNum}.${innerNum}`;
 
-const targetDir = path.resolve(__dirname, `dist/${versionStr}`);
-
-// check if output directory already exists
-if (fs.existsSync(targetDir)) {
-    console.log(`[ALERT] Output directory already exists: ${targetDir}`);
-    console.log(`[ALERT] Terminating build process as it is already present.`);
-    process.exit(1);
-}
-
-// Clean up all other old files/folders in dist/ prior to generation
-const distDir = path.resolve(__dirname, 'dist');
-if (fs.existsSync(distDir)) {
-    const files = fs.readdirSync(distDir);
-    for (const file of files) {
-        const filePath = path.join(distDir, file);
-        try {
-            fs.rmSync(filePath, { recursive: true, force: true });
-            console.log(`Cleaned up old build file/folder: ${file}`);
-        } catch (err) {
-            console.warn(`Warning: could not delete old file/folder ${file}:`, err.message);
-        }
-    }
-}
-
 const replaceVersionPlugin = {
     name: 'replace-version',
     transform(code, id) {
@@ -85,6 +61,7 @@ const replaceVersionPlugin = {
 
 export default {
     plugins: [replaceVersionPlugin],
+    publicDir: false,
     build: {
         lib: {
             entry: "src/vertical.js",
@@ -92,7 +69,7 @@ export default {
             formats: ["umd"],
             fileName: () => "ksvertical.js"
         },
-        outDir: `dist/${versionStr}`,
+        outDir: "dist",
         emptyOutDir: false
     },
     resolve: {
