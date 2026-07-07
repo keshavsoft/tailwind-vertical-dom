@@ -29,30 +29,76 @@ function getLatestVersionCombination() {
 
     const entryPath = path.join(templateDir, inner, 'entry.js');
     if (fs.existsSync(entryPath)) {
-        return { outer, inner, entryPath };
+        return { outer, inner, entryPath, type: 'entry' };
     }
+
+    const aiPath = path.join(templateDir, inner, 'ai.js');
+    if (fs.existsSync(aiPath)) {
+        return { outer, inner, entryPath: aiPath, type: 'ai' };
+    }
+
     return null;
 }
 
 const latest = getLatestVersionCombination() || {
     outer: 'v2',
     inner: 'v6',
-    entryPath: path.resolve(__dirname, 'bin/vertical/v2/commands/vertical/template/v6/entry.js')
+    entryPath: path.resolve(__dirname, 'bin/vertical/v2/commands/vertical/template/v6/entry.js'),
+    type: 'entry'
 };
 
 const outerNum = latest.outer.slice(1);
 const innerNum = latest.inner.slice(1);
 const versionStr = `v${outerNum}.${innerNum}`;
 
-const replaceVersionPlugin = {
-    name: 'replace-version',
+const entryPlugin = {
+    name: 'vertical-entry-plugin',
+    load(id) {
+        const normalizedId = path.resolve(id).toLowerCase().replace(/\\/g, '/');
+        const targetId = path.resolve(__dirname, 'index.js').toLowerCase().replace(/\\/g, '/');
+        if (normalizedId === targetId) {
+            const normalizedEntryPath = latest.entryPath.replace(/\\/g, '/');
+            if (latest.type === 'ai') {
+                return `
+import KSAiVertical from "${normalizedEntryPath}";
+
+const initCreate = async (cfg) => {
+    const table = new KSAiVertical(cfg);
+    await table.initCreate();
+    return table;
+};
+
+(async () => {
+    window.KSVerticalVersion = "${versionStr}";
+
+    window.KSVertical = {};
+
+    window.KSVertical.initCreate = initCreate;
+})();
+`;
+            } else {
+                return `
+import { initCreate } from "${normalizedEntryPath}";
+
+(async () => {
+    window.KSVerticalVersion = "${versionStr}";
+
+    window.KSVertical = {};
+
+    window.KSVertical.initCreate = initCreate;
+})();
+`;
+            }
+        }
+    },
     transform(code, id) {
-        const targetPath = path.resolve(__dirname, 'src/vertical.js');
-        if (path.resolve(id) === targetPath) {
-            const oldVersion = '"v2.6"';
-            const newVersion = JSON.stringify(versionStr);
+        const normalizedId = path.resolve(id).toLowerCase().replace(/\\/g, '/');
+        const resolvedTemplateDir = path.join(verticalDir, latest.outer, 'commands/vertical/template', latest.inner).toLowerCase().replace(/\\/g, '/');
+        if (normalizedId.startsWith(resolvedTemplateDir) && normalizedId.endsWith('/ai.js')) {
+            const targetVersion = `${outerNum}.${innerNum}`;
+            const updatedCode = code.replace(/verticalVersion\s*=\s*"[^"]+"/, `verticalVersion = "${targetVersion}"`);
             return {
-                code: code.replace(oldVersion, newVersion),
+                code: updatedCode,
                 map: null
             };
         }
@@ -60,21 +106,16 @@ const replaceVersionPlugin = {
 };
 
 export default {
-    plugins: [replaceVersionPlugin],
+    plugins: [entryPlugin],
     publicDir: false,
     build: {
         lib: {
-            entry: "src/vertical.js",
+            entry: "index.js",
             name: "KSVertical",
             formats: ["umd"],
             fileName: () => "ksvertical.js"
         },
         outDir: `dist/${versionStr}`,
         emptyOutDir: false
-    },
-    resolve: {
-        alias: {
-            '../bin/vertical/v2/commands/vertical/template/v6/entry.js': latest.entryPath
-        }
     }
 };
